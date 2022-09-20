@@ -10,40 +10,86 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import jordan from '../images/jordan.jpg'
 import axios from 'axios';
 import React, { useState, useEffect } from "react";
 
 
 
-export default function Chaussures() {
+export default function Chaussures({chaussures, setChaussures}) {
   
-    const [chaussures, setChaussures] = useState([]);
-  
+    const [allShoes, setallShoes] = useState([]);
+    
+
+
     useEffect(() => {
       getChaussures();
-    }, []);
+    });
   
     const getChaussures = async () => {
-      const response = await axios.get("http://localhost:4002/api/chaussures");
-      setChaussures(response.data);
+      var response = await axios.get("http://localhost:4002/api/chaussures");
+      setallShoes(response.data);
     };
 
-  
+  const [Pointures, setPointures] = React.useState(0);
 
-  const [Pointure, setPointure] = React.useState('');
+  const [Sizes, setSizes] = React.useState([]);
+  useEffect(() => {
+    getSizes();
+  }, []);
+
+  const getSizes = async () => {
+    var response = await axios.get("http://localhost:4002/api/pointure/chaussures");
+    setSizes(response.data);
+  };
+  
+  const [Brands, setBrands] = React.useState([]);
+  useEffect(() => {
+    getBrands();
+  }, []);
+
+  const getBrands = async () => {
+    var response = await axios.get("http://localhost:4002/api/marques");
+    setBrands(response.data);
+  };
 
   const handleChangePointures = (event) => {
-    setPointure(event.target.value);
+    setPointures(event.target.value);
   };
-  const [Marques, setMarques] = React.useState('');
+
+  const [Marques, setMarques] = React.useState(0);
 
   const handleChangeMarques = (event) => {
     setMarques(event.target.value);
   };
 
+  const filteredBrand = () => {
+
+    if(Marques !== 0){
+      if(Pointures === 0){
+        var filteredData = allShoes.filter(chaussure => chaussure.id_marque === Marques);
+      setChaussures(filteredData);
+      }
+      else{
+        var filtereddata = allShoes.filter(chaussure => chaussure.id_marque === Marques);
+        var filteredShoes = filtereddata.filter(chaussure => chaussure.pointure === Pointures);
+        setChaussures(filteredShoes)
+      }  
+    }
+    else{
+      if(Pointures !== 0){
+        var filteredshoes = allShoes.filter(chaussure => chaussure.pointure === Pointures);
+        setChaussures(filteredshoes)
+      }
+      else{
+        setChaussures(allShoes)
+      }
+    }
+  }
+
+  
   return (
     <div className='chaussuresBox' id='shoes'>
+      
         <div className='Selects'>
           <Box sx={{ minWidth: 120, marginRight: 3, width: 200 }}>
           <FormControl fullWidth>
@@ -51,15 +97,19 @@ export default function Chaussures() {
               <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={Pointure}
+              value={Pointures}
               label="Age"
               onChange={handleChangePointures}
               >
-              <MenuItem value={10}>Toutes</MenuItem>
-
+              <MenuItem value={0}>Toutes</MenuItem>
+              {Sizes.map((item) => {
+                return(
+                  <MenuItem key={item.pointure} value={item.pointure}>{item.pointure}</MenuItem>
+              )})}
               </Select>
           </FormControl>
           </Box>
+
           <Box sx={{ minWidth: 120, marginRight: 3, width: 200  }}>
           <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">Marques</InputLabel>
@@ -70,22 +120,32 @@ export default function Chaussures() {
               label="Age"
               onChange={handleChangeMarques}
           >
-              <MenuItem value={10}>Toutes</MenuItem>
-
+              <MenuItem value={0}>Toutes</MenuItem>
+              {Brands.map((item) => {
+                return(
+                  <MenuItem key={item.marque} value={item.id_marque}>{item.marque}</MenuItem>
+              )})}
+              
           </Select>
+          
           </FormControl>
+
           </Box>
+          <Button size="small" onClick={filteredBrand}  > Filtrer</Button>
+
         </div>
         
         <div className='Chaussures'>
-        {chaussures.map((chaussure, index) => {
+        
+        {chaussures.map((chaussure) => {
           return(
-            <Card sx={{ width: 280, marginBottom: 5 }}  key={chaussure.nom_chaussure}>
+
+          <Card sx={{ width: 280, marginBottom: 5 }}  key={chaussure.nom_chaussure} >
         <CardMedia
           component="img"
           height="140"
           image={chaussure.images}
-          alt="image"
+          alt="Chaussure"
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
@@ -96,86 +156,14 @@ export default function Chaussures() {
           </Typography>
           <br></br>
           <Typography variant="h6">
-          
+          {chaussure.prix}FCFA
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">Acheter</Button>
-          <Button size="small">Ajouter au panier</Button>
+          <Button size="small" > Acheter</Button>
+          <Button size="small" >Ajouter au panier</Button>
         </CardActions>
           </Card>)})}
-          <Card sx={{ width: 280, marginBottom: 5 }} >
-        <CardMedia
-          component="img"
-          height="140"
-          image={jordan}
-          alt="jordan"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Couleur: - Pointure: 
-          </Typography>
-          <br></br>
-          <Typography variant="h6">
-          
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small">Acheter</Button>
-          <Button size="small">Ajouter au panier</Button>
-        </CardActions>
-          </Card>
-          <Card sx={{ width: 280, marginBottom: 5 }}  >
-        <CardMedia
-          component="img"
-          height="140"
-          image={jordan}
-          alt="jordan"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-          
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Couleur:- Pointure:
-          </Typography>
-          <br></br>
-          <Typography variant="h6">
-         
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small">Acheter</Button>
-          <Button size="small">Ajouter au panier</Button>
-        </CardActions>
-          </Card>
-          <Card sx={{ width: 280, marginBottom: 5 }}>
-        <CardMedia
-          component="img"
-          height="140"
-          image={jordan}
-          alt="jordan"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-          
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Couleur: - Pointure:
-          </Typography>
-          <br></br>
-          <Typography variant="h6">
-          
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small">Acheter</Button>
-          <Button size="small">Ajouter au panier</Button>
-        </CardActions>
-          </Card>
         </div>
         
     </div>

@@ -1,23 +1,22 @@
 .App {
   width: 95vw;
   margin: 2vw auto;
+  
 
 }
 .logo{
-  height: 55px;
+  height: 50px;
 }
 .topbar{
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
 }
-.recherche{
-  display: flex;
-  justify-content: space-between;
-  margin-top: 4vw;
-}
+
+
 .slide{
-  margin: 8vw auto;
+  margin: 6vw auto;
 }
 .slide h2{
   display: flex;
@@ -25,6 +24,16 @@
   font-size: 40px;
   color: rgb(0, 81, 255);
  
+}
+.recherche{
+  display: flex;
+  width: 90vw;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4vw 5vw 0 5vw;
+}
+Button, Stack{
+  height: 55px;
 }
 .adidas{
   height: 75px;

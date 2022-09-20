@@ -5,7 +5,7 @@ const Topbar = () => {
     return ( 
         <div className='topbar'>
             <img src={logo} alt="" />
-            <AddShoppingCartIcon sx={{fontSize: 50}} />
+            <AddShoppingCartIcon sx={{fontSize: 35}} />
         </div>
      );
 }
